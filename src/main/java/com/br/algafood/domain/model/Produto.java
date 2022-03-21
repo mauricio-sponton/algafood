@@ -2,6 +2,7 @@ package com.br.algafood.domain.model;
 
 import java.math.BigDecimal;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,13 +23,17 @@ public class Produto {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@Column(nullable = false)
 	private String nome;
 	
+	@Column(nullable = false)
 	private String descricao;
 	
+	@Column(nullable = false)
 	private BigDecimal preco;
-	
-	private boolean ativo;
+
+	@Column(nullable = false)
+	private Boolean ativo;
 	
 	@ManyToOne
 	@JoinColumn(nullable = false)
