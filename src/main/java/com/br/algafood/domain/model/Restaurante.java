@@ -12,6 +12,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
@@ -57,13 +59,13 @@ public class Restaurante {
 	@Column(nullable = false, columnDefinition = "datetime")
 	private LocalDateTime dataAtualizacao;
 	
-//	@JsonIgnore
-//	@ManyToMany
-//	@JoinTable(name = "restaurante_forma_pagamento",
-//			joinColumns = @JoinColumn(name = "restaurante_id"),
-//			inverseJoinColumns = @JoinColumn(name = "forma_pagamento_id"))
-//	private List<FormaPagamento> formasPagamento = new ArrayList<>();
-//	
+	@JsonIgnore
+	@ManyToMany
+	@JoinTable(name = "restaurante_forma_pagamento",
+			joinColumns = @JoinColumn(name = "restaurante_id"),
+			inverseJoinColumns = @JoinColumn(name = "forma_pagamento_id"))
+	private List<FormaPagamento> formasPagamento = new ArrayList<>();
+	
 	@JsonIgnore
 	@OneToMany(mappedBy = "restaurante")
 	private List<Produto> produtos = new ArrayList<>();
