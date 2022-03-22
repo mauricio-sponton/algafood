@@ -41,9 +41,9 @@ public class Restaurante {
 	@Column(name = "taxa_frete", nullable = false)
 	private BigDecimal taxaFrete;
 	
-	private Boolean ativo = true;
-	
-	private Boolean aberto = true;
+//	private Boolean ativo = true;
+//	
+//	private Boolean aberto = true;
 	
 	@ManyToOne
 	@JoinColumn(name = "cozinha_id", nullable = false)
@@ -66,10 +66,10 @@ public class Restaurante {
 			inverseJoinColumns = @JoinColumn(name = "forma_pagamento_id"))
 	private List<FormaPagamento> formasPagamento = new ArrayList<>();
 	
-	@ManyToMany
-	@JoinTable(name = "restaurante_responsaveis", joinColumns = @JoinColumn(name = "restaurante_id"),
-			inverseJoinColumns = @JoinColumn(name = "usuario_id"))
-	private List<Usuario> responsaveis = new ArrayList<>();
+//	@ManyToMany
+//	@JoinTable(name = "restaurante_responsaveis", joinColumns = @JoinColumn(name = "restaurante_id"),
+//			inverseJoinColumns = @JoinColumn(name = "usuario_id"))
+//	private List<Usuario> responsaveis = new ArrayList<>();
 	
 	@JsonIgnore
 	@OneToMany(mappedBy = "restaurante")
