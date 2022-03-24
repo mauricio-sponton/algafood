@@ -43,7 +43,7 @@ class CozinhaTestsAPI {
 		RestAssured.basePath = "/cozinhas";
 		
 		jsonCorretoCozinhaChinesa = ResourceUtils.getContentFromResource(
-				"/json/salvar-cozinha.json");
+				"/json/correto/salvar-cozinha.json");
 		
 		databaseCleaner.clearTables();
 		prepararDados();
@@ -81,6 +81,20 @@ class CozinhaTestsAPI {
 			.post()
 		.then()
 			.statusCode(HttpStatus.CREATED.value());
+	}
+	
+	@Test
+	public void deveRetornarStatus200_QuandoAtualizarCozinha() {
+		given()
+		.body(jsonCorretoCozinhaChinesa)
+		.pathParam("cozinhaId", cozinhaAmericana.getId())
+		.contentType(ContentType.JSON)
+		.accept(ContentType.JSON)
+	.when()
+		.put("/{cozinhaId}")
+	.then()
+		.statusCode(HttpStatus.OK.value())
+		.body("nome", Matchers.equalTo("Chinesa"));
 	}
 	
 	@Test
