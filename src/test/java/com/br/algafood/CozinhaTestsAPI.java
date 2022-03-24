@@ -14,6 +14,7 @@ import org.springframework.test.context.TestPropertySource;
 import com.br.algafood.domain.model.Cozinha;
 import com.br.algafood.domain.repository.CozinhaRepository;
 import com.br.algafood.util.DatabaseCleaner;
+import com.br.algafood.util.ResourceUtils;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -31,11 +32,18 @@ class CozinhaTestsAPI {
 	@Autowired
 	private CozinhaRepository repository;
 	
+	private Cozinha cozinhaAmericana;
+	private int quantidadeCozinhasCadastradas;
+	private String jsonCorretoCozinhaChinesa;
+	
 	@BeforeEach
 	public void setUp() {
 		RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
 		RestAssured.port = port;
 		RestAssured.basePath = "/cozinhas";
+		
+		jsonCorretoCozinhaChinesa = ResourceUtils.getContentFromResource(
+				"/json/salvar-cozinha.json");
 		
 		databaseCleaner.clearTables();
 		prepararDados();
@@ -52,21 +60,21 @@ class CozinhaTestsAPI {
 	}
 	
 	@Test
-	public void deveConter2Cozinhas_QuandoConsultarCozinhas() {
+	public void deveConterQuantidadeCorreta_QuandoConsultarCozinhas() {
 		
 		given()
 			.accept(ContentType.JSON)
 		.when()
 			.get()
 		.then()
-			.body("", Matchers.hasSize(2));
+			.body("", Matchers.hasSize(quantidadeCozinhasCadastradas));
 //			.body("nome", hasItems("Indiana", "Tailandesa"));
 	}
 	
 	@Test
 	public void testRetornarStatus201_QuandoCadastrarCozinha() {
 		given()
-			.body("{ \"nome\": \"Chinesa\" }")
+			.body(jsonCorretoCozinhaChinesa)
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
 		.when()
@@ -78,7 +86,7 @@ class CozinhaTestsAPI {
 	@Test
 	public void deveRetornarRespostaEStatusCorretos_QuandoConsultarCozinhaExistente() {
 		given()
-		.pathParam("cozinhaId", 2)
+		.pathParam("cozinhaId", cozinhaAmericana.getId())
 		.accept(ContentType.JSON)
 	.when()
 		.get("/{cozinhaId}")
@@ -99,15 +107,15 @@ class CozinhaTestsAPI {
 	}
 	
 	private void prepararDados() {
-		Cozinha cozinha1 = new Cozinha();
-		cozinha1.setNome("Tailandesa");
+		Cozinha cozinhaTailandesa = new Cozinha();
+		cozinhaTailandesa.setNome("Tailandesa");
+		repository.save(cozinhaTailandesa);
+
+		cozinhaAmericana = new Cozinha();
+		cozinhaAmericana.setNome("Americana");
+		repository.save(cozinhaAmericana);
 		
-		repository.save(cozinha1);
-		
-		Cozinha cozinha2 = new Cozinha();
-		cozinha2.setNome("Americana");
-		
-		repository.save(cozinha2);
+		quantidadeCozinhasCadastradas = (int) repository.count();
 		
 	}
 
