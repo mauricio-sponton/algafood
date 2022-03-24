@@ -57,6 +57,7 @@ public class RestauranteTestsAPI {
 		RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
 		RestAssured.port = port;
 		RestAssured.basePath = "/restaurantes";
+		
 
 		jsonRestauranteCorreto = ResourceUtils.getContentFromResource(
 				"/json/correto/restaurante-new-york-barbecue.json");
