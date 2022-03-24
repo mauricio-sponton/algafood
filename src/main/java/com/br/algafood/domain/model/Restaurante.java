@@ -1,7 +1,7 @@
 package com.br.algafood.domain.model;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +26,7 @@ import javax.validation.groups.Default;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.br.algafood.Groups;
+import com.br.algafood.core.validation.Groups;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -65,10 +65,12 @@ public class Restaurante {
 	private Endereco endereco;
 	
 	@CreationTimestamp
-	private LocalDateTime dataCadastro;
+	@Column(nullable = false, columnDefinition = "datetime")
+	private OffsetDateTime dataCadastro;
 	
 	@UpdateTimestamp
-	private LocalDateTime dataAtualizacao;
+	@Column(nullable = false, columnDefinition = "datetime")
+	private OffsetDateTime dataAtualizacao;
 	
 	@ManyToMany
 	@JoinTable(name = "restaurante_forma_pagamento",
