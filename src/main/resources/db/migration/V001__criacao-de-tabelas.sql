@@ -50,7 +50,7 @@ create table grupo_permissao (
 
 
 create table usuario (
-	id bigint not null,
+	id bigint not null auto_increment,
 	nome varchar(100) not null,
     email varchar(60) not null,
     senha varchar(60) not null,
