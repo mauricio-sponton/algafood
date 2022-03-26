@@ -50,7 +50,7 @@ public class Restaurante {
 	@Column(name = "taxa_frete", nullable = false)
 	private BigDecimal taxaFrete;
 	
-//	private Boolean ativo = true;
+	private Boolean ativo = Boolean.TRUE;
 //	
 //	private Boolean aberto = true;
 	
@@ -85,5 +85,13 @@ public class Restaurante {
 	
 	@OneToMany(mappedBy = "restaurante")
 	private List<Produto> produtos = new ArrayList<>();
+	
+	public void ativar() {
+		setAtivo(true);
+	}
+	
+	public void inativar() {
+		setAtivo(false);
+	}
 	
 }
