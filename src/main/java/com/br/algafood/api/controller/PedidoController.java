@@ -28,7 +28,9 @@ import com.br.algafood.domain.exception.NegocioException;
 import com.br.algafood.domain.model.Pedido;
 import com.br.algafood.domain.model.Usuario;
 import com.br.algafood.domain.repository.PedidoRepository;
+import com.br.algafood.domain.repository.filter.PedidoFilter;
 import com.br.algafood.domain.service.PedidoService;
+import com.br.algafood.infrastructure.repository.specification.PedidoSpecification;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
@@ -52,8 +54,9 @@ public class PedidoController {
 	private PedidoInputDTODisassembler pedidoInputDisassembler;
 	
 	@GetMapping
-	public List<PedidoResumoDTO> listar() {
-		return pedidoResumoAssembler.toCollectionModel(pedidoRepository.findAll());
+	public List<PedidoResumoDTO> pesquisar(PedidoFilter filtro) {
+		List<Pedido> pedidos = pedidoRepository.findAll(PedidoSpecification.usandoFiltro(filtro));
+		return pedidoResumoAssembler.toCollectionModel(pedidos);
 	}
 	
 	@GetMapping("/projecao")
