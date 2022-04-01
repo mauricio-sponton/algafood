@@ -6,6 +6,9 @@ import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,9 +57,11 @@ public class PedidoController {
 	private PedidoInputDTODisassembler pedidoInputDisassembler;
 	
 	@GetMapping
-	public List<PedidoResumoDTO> pesquisar(PedidoFilter filtro) {
-		List<Pedido> pedidos = pedidoRepository.findAll(PedidoSpecification.usandoFiltro(filtro));
-		return pedidoResumoAssembler.toCollectionModel(pedidos);
+	public Page<PedidoResumoDTO> pesquisar(PedidoFilter filtro, Pageable pageable) {
+		Page<Pedido> pedidos = pedidoRepository.findAll(PedidoSpecification.usandoFiltro(filtro), pageable);
+		List<PedidoResumoDTO> pedidosDTO = pedidoResumoAssembler.toCollectionModel(pedidos.getContent());
+		Page<PedidoResumoDTO> pedidosPage = new PageImpl<PedidoResumoDTO>(pedidosDTO, pageable, pedidos.getTotalElements());
+		return pedidosPage;
 	}
 	
 	@GetMapping("/projecao")
