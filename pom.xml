@@ -16,6 +16,8 @@
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>11</java.version>
+		<jasperreports.version>6.16.0</jasperreports.version>
+		<jasperreports-functions.version>6.16.0</jasperreports-functions.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -60,6 +62,17 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports</artifactId>
+			<version>${jasperreports.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports-functions</artifactId>
+			<version>${jasperreports-functions.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
