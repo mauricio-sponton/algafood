@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
 
-import com.br.algafood.domain.event.PedidoConfirmadoEvent;
+import com.br.algafood.domain.event.PedidoCanceladoEvent;
 import com.br.algafood.domain.model.Pedido;
 import com.br.algafood.domain.service.EnvioEmailService;
 import com.br.algafood.domain.service.EnvioEmailService.Mensagem;
@@ -16,7 +16,7 @@ public class NotificacaoClientePedidoCanceladoListener {
 	private EnvioEmailService envioEmailService;
 	
 	@TransactionalEventListener
-	public void aoConfirmarPedido(PedidoConfirmadoEvent event) {
+	public void aoConfirmarPedido(PedidoCanceladoEvent event) {
 		
 		Pedido pedido = event.getPedido();
 		
