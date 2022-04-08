@@ -38,6 +38,6 @@ public interface CidadeControllerOpenApi {
 	@ApiOperation("Exclui uma cidade por ID")
 	@ApiResponses({ @ApiResponse(responseCode = "204", description = "Cidade excluída"),
 			@ApiResponse(responseCode = "404", description = "Cidade não encontrada", content = @Content(schema = @Schema(implementation = Problema.class))) })
-	void remover(Long cidadeId);
+	void remover(@ApiParam(value = "ID de uma cidade") Long cidadeId);
 
 }

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.br.algafood.api.assembler.GrupoDTOAssembler;
 import com.br.algafood.api.assembler.GrupoInputDTODisassembler;
+import com.br.algafood.api.controller.openapi.GrupoControllerOpenApi;
 import com.br.algafood.api.model.GrupoDTO;
 import com.br.algafood.api.model.input.GrupoInputDTO;
 import com.br.algafood.domain.model.Grupo;
@@ -26,7 +27,7 @@ import com.br.algafood.domain.service.CadastroGrupoService;
 
 @RestController
 @RequestMapping("/grupos")
-public class GrupoController {
+public class GrupoController implements GrupoControllerOpenApi {
 
 	@Autowired
 	private GrupoRepository grupoRepository;
@@ -40,17 +41,20 @@ public class GrupoController {
 	@Autowired
 	private GrupoInputDTODisassembler disassembler;
 	
+	@Override
 	@GetMapping
 	public List<GrupoDTO> listar() {
 		return assembler.toCollectionModel(grupoRepository.findAll());
 	}
 	
+	@Override
 	@GetMapping("/{grupoId}")
 	public GrupoDTO buscar(@PathVariable Long grupoId) {
 		Grupo grupo = cadastroGrupo.buscarOuFalhar(grupoId);
 		return assembler.toModel(grupo);
 	}
 	
+	@Override
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public GrupoDTO adicionar(@RequestBody @Valid GrupoInputDTO grupoInput) {
@@ -59,6 +63,7 @@ public class GrupoController {
 		return assembler.toModel(grupo);
 	}
 	
+	@Override
 	@PutMapping("/{grupoId}")
 	public GrupoDTO atualizar(@PathVariable Long grupoId,
 			@RequestBody @Valid GrupoInputDTO grupoInput) {
@@ -71,6 +76,7 @@ public class GrupoController {
 		return assembler.toModel(grupoAtual);
 	}
 	
+	@Override
 	@DeleteMapping("/{grupoId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long grupoId) {
