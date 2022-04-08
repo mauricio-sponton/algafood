@@ -14,12 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.br.algafood.api.assembler.PermissaoDTOAssembler;
 import com.br.algafood.api.model.PermissaoDTO;
+import com.br.algafood.api.openapi.controller.GrupoPermissaoControllerOpenApi;
 import com.br.algafood.domain.model.Grupo;
 import com.br.algafood.domain.service.CadastroGrupoService;
 
 @RestController
 @RequestMapping(value = "/grupos/{grupoId}/permissoes")
-public class GrupoPermissaoController {
+public class GrupoPermissaoController implements GrupoPermissaoControllerOpenApi {
 	
 	@Autowired
 	private CadastroGrupoService cadastroGrupoService;
@@ -27,18 +28,21 @@ public class GrupoPermissaoController {
 	@Autowired
 	private PermissaoDTOAssembler assembler;
 	
+	@Override
 	@GetMapping
 	public List<PermissaoDTO> listar(@PathVariable Long grupoId) {
 		Grupo grupo = cadastroGrupoService.buscarOuFalhar(grupoId);
 		return assembler.toCollectionModel(grupo.getPermissoes());
 	}
 	
+	@Override
 	@DeleteMapping("/{permissaoId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void desassociar(@PathVariable Long grupoId, @PathVariable Long permissaoId) {
 		cadastroGrupoService.desassociarPermissao(grupoId, permissaoId);
 	}
 	
+	@Override
 	@PutMapping("/{permissaoId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void associar(@PathVariable Long grupoId, @PathVariable Long permissaoId) {

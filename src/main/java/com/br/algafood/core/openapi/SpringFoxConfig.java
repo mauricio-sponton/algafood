@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.context.request.ServletWebRequest;
 
 import com.br.algafood.api.exception.Problema;
@@ -52,7 +53,7 @@ public class SpringFoxConfig {
 				.globalResponses(HttpMethod.POST, globalPostPutResponseMessages())
 				.globalResponses(HttpMethod.PUT, globalPostPutResponseMessages())
 				.globalResponses(HttpMethod.DELETE, globalDeleteResponseMessages()).apiInfo(apiInfo())
-				.additionalModels(typeResolver.resolve(Problema.class)).ignoredParameterTypes(ServletWebRequest.class)
+				.additionalModels(typeResolver.resolve(Problema.class)).ignoredParameterTypes(ServletWebRequest.class, MappingJacksonValue.class)
 				.directModelSubstitute(Pageable.class, PageableModelOpenApi.class)
 				.alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(Page.class, CozinhaDTO.class),
 						CozinhasModelOpenApi.class))
