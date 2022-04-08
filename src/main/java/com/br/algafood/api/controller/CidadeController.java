@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,9 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.br.algafood.api.assembler.CidadeDTOAssembler;
 import com.br.algafood.api.assembler.CidadeInputDTODisassembler;
-import com.br.algafood.api.controller.openapi.CidadeControllerOpenApi;
 import com.br.algafood.api.model.CidadeDTO;
 import com.br.algafood.api.model.input.CidadeInputDTO;
+import com.br.algafood.api.openapi.controller.CidadeControllerOpenApi;
 import com.br.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.br.algafood.domain.exception.NegocioException;
 import com.br.algafood.domain.model.Cidade;
@@ -28,7 +29,7 @@ import com.br.algafood.domain.repository.CidadeRepository;
 import com.br.algafood.domain.service.CadastroCidadeService;
 
 @RestController
-@RequestMapping(value = "/cidades")
+@RequestMapping(path = "/cidades")
 public class CidadeController implements CidadeControllerOpenApi {
 
 	@Autowired
@@ -44,20 +45,20 @@ public class CidadeController implements CidadeControllerOpenApi {
 	private CidadeInputDTODisassembler disassembler;
 
 	@Override
-	@GetMapping
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<CidadeDTO> listar() {
 		return assembler.toCollectionModel(cidadeRepository.findAll());
 	}
 
 	@Override
-	@GetMapping("/{cidadeId}")
+	@GetMapping(path = "/{cidadeId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public CidadeDTO buscar(@PathVariable Long cidadeId) {
 		Cidade cidade = cadastroCidade.buscarOuFalhar(cidadeId);
 		return assembler.toModel(cidade);
 	}
 
 	@Override
-	@PostMapping
+	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
 	public CidadeDTO adicionar(@RequestBody @Valid CidadeInputDTO cidadeInput) {
 		try {
@@ -71,7 +72,7 @@ public class CidadeController implements CidadeControllerOpenApi {
 	}
 
 	@Override
-	@PutMapping("/{cidadeId}")
+	@PutMapping(path = "/{cidadeId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public CidadeDTO atualizar(@PathVariable Long cidadeId, @RequestBody @Valid CidadeInputDTO cidadeInput) {
 		try {
 			Cidade cidadeAtual = cadastroCidade.buscarOuFalhar(cidadeId);

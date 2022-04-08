@@ -1,4 +1,4 @@
-package com.br.algafood.api.controller.openapi;
+package com.br.algafood.api.openapi.controller;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public interface GrupoControllerOpenApi {
 	@ApiOperation("Lista os grupos")
 	List<GrupoDTO> listar();
 
-	@ApiOperation("Busca uma cidade por ID")
+	@ApiOperation("Busca um grupo por ID")
 	@ApiResponses({
 			@ApiResponse(responseCode = "400", description = "ID do grupo inválido", content = @Content(schema = @Schema(implementation = Problema.class))),
 			@ApiResponse(responseCode = "404", description = "Grupo não encontrado", content = @Content(schema = @Schema(implementation = Problema.class))) })

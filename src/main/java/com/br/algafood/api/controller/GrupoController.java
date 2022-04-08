@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,9 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.br.algafood.api.assembler.GrupoDTOAssembler;
 import com.br.algafood.api.assembler.GrupoInputDTODisassembler;
-import com.br.algafood.api.controller.openapi.GrupoControllerOpenApi;
 import com.br.algafood.api.model.GrupoDTO;
 import com.br.algafood.api.model.input.GrupoInputDTO;
+import com.br.algafood.api.openapi.controller.GrupoControllerOpenApi;
 import com.br.algafood.domain.model.Grupo;
 import com.br.algafood.domain.repository.GrupoRepository;
 import com.br.algafood.domain.service.CadastroGrupoService;
@@ -42,20 +43,20 @@ public class GrupoController implements GrupoControllerOpenApi {
 	private GrupoInputDTODisassembler disassembler;
 	
 	@Override
-	@GetMapping
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<GrupoDTO> listar() {
 		return assembler.toCollectionModel(grupoRepository.findAll());
 	}
 	
 	@Override
-	@GetMapping("/{grupoId}")
+	@GetMapping(path = "/{grupoId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public GrupoDTO buscar(@PathVariable Long grupoId) {
 		Grupo grupo = cadastroGrupo.buscarOuFalhar(grupoId);
 		return assembler.toModel(grupo);
 	}
 	
 	@Override
-	@PostMapping
+	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
 	public GrupoDTO adicionar(@RequestBody @Valid GrupoInputDTO grupoInput) {
 		Grupo grupo = disassembler.toDomainObject(grupoInput);
@@ -64,7 +65,7 @@ public class GrupoController implements GrupoControllerOpenApi {
 	}
 	
 	@Override
-	@PutMapping("/{grupoId}")
+	@PutMapping(path = "/{grupoId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public GrupoDTO atualizar(@PathVariable Long grupoId,
 			@RequestBody @Valid GrupoInputDTO grupoInput) {
 		Grupo grupoAtual = cadastroGrupo.buscarOuFalhar(grupoId);
