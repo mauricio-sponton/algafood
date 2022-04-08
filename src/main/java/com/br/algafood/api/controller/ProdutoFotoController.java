@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.br.algafood.api.assembler.FotoProdutoDTOAssembler;
 import com.br.algafood.api.model.FotoProdutoDTO;
 import com.br.algafood.api.model.input.ProdutoFotoInputDTO;
+import com.br.algafood.api.openapi.controller.ProdutoFotoControllerOpenApi;
 import com.br.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.br.algafood.domain.model.FotoProduto;
 import com.br.algafood.domain.model.Produto;
@@ -35,7 +36,7 @@ import com.br.algafood.domain.service.FotoStorageService.FotoRecuperada;
 
 @RestController
 @RequestMapping("/restaurantes/{restauranteId}/produtos/{produtoId}/foto")
-public class ProdutoFotoController {
+public class ProdutoFotoController implements ProdutoFotoControllerOpenApi {
 
 	@Autowired
 	private CadastroProdutoService cadastroProdutoService;
@@ -49,6 +50,7 @@ public class ProdutoFotoController {
 	@Autowired
 	private FotoStorageService fotoStorageService;
 
+	@Override
 	@PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public FotoProdutoDTO atualizarFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId,
 			@Valid ProdutoFotoInputDTO produtoFotoInputDTO) throws IOException {
@@ -67,13 +69,15 @@ public class ProdutoFotoController {
 		return assembler.toModel(fotoProdutoSalva);
 	}
 
+	@Override
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public FotoProdutoDTO buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
 		FotoProduto fotoProduto = fotoProdutoService.buscarOuFalhar(restauranteId, produtoId);
 		return assembler.toModel(fotoProduto);
 	}
 
-	@GetMapping
+	@Override
+	@GetMapping(produces = MediaType.ALL_VALUE)
 	public ResponseEntity<?> servirFoto(@PathVariable Long restauranteId,
 			@PathVariable Long produtoId, @RequestHeader(name = "accept") String acceptHeader)
 			throws HttpMediaTypeNotAcceptableException {
@@ -100,6 +104,7 @@ public class ProdutoFotoController {
 
 	}
 
+	@Override
 	@DeleteMapping
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void excluir(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
