@@ -14,12 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.br.algafood.api.assembler.FormaPagamentoDTOAssembler;
 import com.br.algafood.api.model.FormaPagamentoDTO;
+import com.br.algafood.api.openapi.controller.RestauranteFormaPagamentoControllerOpenApi;
 import com.br.algafood.domain.model.Restaurante;
 import com.br.algafood.domain.service.CadastroRestauranteService;
 
 @RestController
 @RequestMapping(value = "/restaurantes/{restauranteId}/formas-pagamento")
-public class RestauranteFormaPagamentoController {
+public class RestauranteFormaPagamentoController implements RestauranteFormaPagamentoControllerOpenApi {
 	
 	@Autowired
 	private CadastroRestauranteService cadastroRestaurante;
@@ -27,18 +28,21 @@ public class RestauranteFormaPagamentoController {
 	@Autowired
 	private FormaPagamentoDTOAssembler assembler;
 	
+	@Override
 	@GetMapping
 	public List<FormaPagamentoDTO> listar(@PathVariable Long restauranteId) {
 		Restaurante restaurante = cadastroRestaurante.buscarOuFalhar(restauranteId);
 		return assembler.toCollectionModel(restaurante.getFormasPagamento());
 	}
 	
+	@Override
 	@DeleteMapping("/{formaPagamentoId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void desassociar(@PathVariable Long restauranteId, @PathVariable Long formaPagamentoId) {
 		cadastroRestaurante.desassociarFormaPagamento(restauranteId, formaPagamentoId);
 	}
 	
+	@Override
 	@PutMapping("/{formaPagamentoId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void associar(@PathVariable Long restauranteId, @PathVariable Long formaPagamentoId) {
