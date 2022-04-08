@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +21,7 @@ import com.br.algafood.api.assembler.ProdutoDTOAssembler;
 import com.br.algafood.api.assembler.ProdutoInputDTODisassembler;
 import com.br.algafood.api.model.ProdutoDTO;
 import com.br.algafood.api.model.input.ProdutoInputDTO;
+import com.br.algafood.api.openapi.controller.RestauranteProdutoControllerOpenApi;
 import com.br.algafood.domain.model.Produto;
 import com.br.algafood.domain.model.Restaurante;
 import com.br.algafood.domain.repository.ProdutoRepository;
@@ -28,7 +30,7 @@ import com.br.algafood.domain.service.CadastroRestauranteService;
 
 @RestController
 @RequestMapping(value = "/restaurantes/{restauranteId}/produtos")
-public class RestauranteProdutoController {
+public class RestauranteProdutoController implements RestauranteProdutoControllerOpenApi {
 	
 	@Autowired
 	private CadastroRestauranteService cadastroRestaurante;
@@ -46,7 +48,8 @@ public class RestauranteProdutoController {
 	private ProdutoRepository produtoRepository;
 	
 	
-	@GetMapping
+	@Override
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<ProdutoDTO> listar(@PathVariable Long restauranteId, @RequestParam(required = false) boolean incluirInativos) {
 		Restaurante restaurante = cadastroRestaurante.buscarOuFalhar(restauranteId);
 		
@@ -61,13 +64,15 @@ public class RestauranteProdutoController {
 		return assembler.toCollectionModel(produtos);
 	}
 	
-	@GetMapping("/{produtoId}")
+	@Override
+	@GetMapping(path = "/{produtoId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ProdutoDTO buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
 		Produto produto = produtoService.buscarOuFalhar(restauranteId, produtoId);
 		return assembler.toModel(produto);
 	}
 	
-	@PostMapping
+	@Override
+	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public ProdutoDTO adicionar(@PathVariable Long restauranteId,
             @RequestBody @Valid ProdutoInputDTO produtoInput) {
@@ -81,7 +86,8 @@ public class RestauranteProdutoController {
         return assembler.toModel(produto);
     }
     
-    @PutMapping("/{produtoId}")
+    @Override
+	@PutMapping(path = "/{produtoId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ProdutoDTO atualizar(@PathVariable Long restauranteId, @PathVariable Long produtoId,
             @RequestBody @Valid ProdutoInputDTO produtoInput) {
         Produto produtoAtual = produtoService.buscarOuFalhar(restauranteId, produtoId);

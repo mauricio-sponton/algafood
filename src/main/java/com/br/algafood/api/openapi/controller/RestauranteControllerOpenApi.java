@@ -20,7 +20,7 @@ public interface RestauranteControllerOpenApi {
 	@ApiOperation("Lista os restaurantes")
 	List<RestauranteDTO> listar();
 
-	@ApiOperation("Busca um grupo por ID")
+	@ApiOperation("Busca um restaurante por ID")
 	@ApiResponses({
 			@ApiResponse(responseCode = "400", description = "ID do restaurante inválido", content = @Content(schema = @Schema(implementation = Problema.class))),
 			@ApiResponse(responseCode = "404", description = "Restaurante não encontrado", content = @Content(schema = @Schema(implementation = Problema.class))) })
