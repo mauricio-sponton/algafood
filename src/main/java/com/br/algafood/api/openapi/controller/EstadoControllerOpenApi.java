@@ -6,12 +6,14 @@ import com.br.algafood.api.exception.Problema;
 import com.br.algafood.api.model.EstadoDTO;
 import com.br.algafood.api.model.input.EstadoInputDTO;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
+@Api(tags = "Estados")
 public interface EstadoControllerOpenApi {
 
 	@ApiOperation("Lista os estados")
