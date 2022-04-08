@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +28,7 @@ import com.br.algafood.api.assembler.PedidoResumoDTOAssembler;
 import com.br.algafood.api.model.PedidoDTO;
 import com.br.algafood.api.model.PedidoResumoDTO;
 import com.br.algafood.api.model.input.PedidoInputDTO;
+import com.br.algafood.api.openapi.controller.PedidoControllerOpenApi;
 import com.br.algafood.core.data.PageableTranslator;
 import com.br.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.br.algafood.domain.exception.NegocioException;
@@ -41,7 +43,7 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
 @RestController
 @RequestMapping("/pedidos")
-public class PedidoController {
+public class PedidoController implements PedidoControllerOpenApi {
 
 	@Autowired
 	private PedidoRepository pedidoRepository;
@@ -58,7 +60,8 @@ public class PedidoController {
 	@Autowired
 	private PedidoInputDTODisassembler pedidoInputDisassembler;
 	
-	@GetMapping
+	@Override
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public Page<PedidoResumoDTO> pesquisar(PedidoFilter filtro, Pageable pageable) {
 		pageable = traduzirPageable(pageable);
 		Page<Pedido> pedidos = pedidoRepository.findAll(PedidoSpecification.usandoFiltro(filtro), pageable);
@@ -67,7 +70,8 @@ public class PedidoController {
 		return pedidosPage;
 	}
 	
-	@GetMapping("/projecao")
+	@Override
+	@GetMapping(path = "/projecao", produces = MediaType.APPLICATION_JSON_VALUE)
 	public MappingJacksonValue listar(@RequestParam(required = false) String campos) {
 		List<Pedido> pedidos = pedidoRepository.findAll();
 		List<PedidoResumoDTO> pedidosModel = pedidoResumoAssembler.toCollectionModel(pedidos);  
@@ -86,13 +90,15 @@ public class PedidoController {
 		return pedidosWrapper;
 	}
 	
-	@GetMapping("/{codigoPedido}")
+	@Override
+	@GetMapping(path = "/{codigoPedido}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public PedidoDTO buscar(@PathVariable String codigoPedido) {
 		Pedido pedido = pedidoService.buscarOuFalhar(codigoPedido);
 		return pedidoAssembler.toModel(pedido);
 	}
 	
-	@PostMapping
+	@Override
+	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
 	public PedidoDTO adicionar(@Valid @RequestBody PedidoInputDTO pedidoInput) {
 	    try {
