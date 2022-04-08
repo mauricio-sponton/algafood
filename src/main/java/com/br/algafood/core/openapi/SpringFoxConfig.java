@@ -52,15 +52,16 @@ public class SpringFoxConfig {
 				.globalResponses(HttpMethod.POST, globalPostPutResponseMessages())
 				.globalResponses(HttpMethod.PUT, globalPostPutResponseMessages())
 				.globalResponses(HttpMethod.DELETE, globalDeleteResponseMessages()).apiInfo(apiInfo())
-				.additionalModels(typeResolver.resolve(Problema.class))
-				.ignoredParameterTypes(ServletWebRequest.class)
+				.additionalModels(typeResolver.resolve(Problema.class)).ignoredParameterTypes(ServletWebRequest.class)
 				.directModelSubstitute(Pageable.class, PageableModelOpenApi.class)
 				.alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(Page.class, CozinhaDTO.class),
 						CozinhasModelOpenApi.class))
-				.alternateTypeRules(AlternateTypeRules.newRule(
-	                    typeResolver.resolve(Page.class, PedidoResumoDTO.class),
-	                    PedidosResumoModelOpenApi.class))
-				.tags(new Tag("Cidades", "Gerencia as cidades"), new Tag("Grupos", "Gerencia os grupos"), new Tag("Cozinhas", "Gerencia as cozinhas"), new Tag("Formas de pagamento", "Gerencia as formas de pagamento"), new Tag("Pedidos", "Gerencia os pedidos"));
+				.alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(Page.class, PedidoResumoDTO.class),
+						PedidosResumoModelOpenApi.class))
+				.tags(new Tag("Cidades", "Gerencia as cidades"), new Tag("Grupos", "Gerencia os grupos"),
+						new Tag("Cozinhas", "Gerencia as cozinhas"),
+						new Tag("Formas de pagamento", "Gerencia as formas de pagamento"),
+						new Tag("Pedidos", "Gerencia os pedidos"), new Tag("Restaurantes", "Gerencia os restaurantes"));
 	}
 
 	private List<Response> globalGetResponseMessages() {

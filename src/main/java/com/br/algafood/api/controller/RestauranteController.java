@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +21,7 @@ import com.br.algafood.api.assembler.RestauranteDTOAssembler;
 import com.br.algafood.api.assembler.RestauranteInputDTODisassembler;
 import com.br.algafood.api.model.RestauranteDTO;
 import com.br.algafood.api.model.input.RestauranteInputDTO;
+import com.br.algafood.api.openapi.controller.RestauranteControllerOpenApi;
 import com.br.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.br.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.br.algafood.domain.exception.NegocioException;
@@ -30,7 +32,7 @@ import com.br.algafood.domain.service.CadastroRestauranteService;
 
 @RestController
 @RequestMapping(value = "/restaurantes")
-public class RestauranteController {
+public class RestauranteController implements RestauranteControllerOpenApi {
 
 	@Autowired
 	private RestauranteRepository restauranteRepository;
@@ -44,18 +46,21 @@ public class RestauranteController {
 	@Autowired
 	private RestauranteInputDTODisassembler restauranteInputDTODisassembler;
 	
-	@GetMapping
+	@Override
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<RestauranteDTO> listar() {
 		return restauranteDTOAssembler.toCollectionModel(restauranteRepository.findAll());
 	}
 	
-	@GetMapping("/{restauranteId}")
+	@Override
+	@GetMapping(path = "/{restauranteId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public RestauranteDTO buscar(@PathVariable Long restauranteId) {
 		Restaurante restaurante = cadastroRestaurante.buscarOuFalhar(restauranteId);
 		return  restauranteDTOAssembler.toModel(restaurante);
 	}
 	
-	@PostMapping
+	@Override
+	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
 	public RestauranteDTO adicionar(@RequestBody @Valid RestauranteInputDTO restauranteInput) {
 		try {
@@ -67,7 +72,8 @@ public class RestauranteController {
 		}
 	}
 	
-	@PutMapping("/{restauranteId}")
+	@Override
+	@PutMapping(path = "/{restauranteId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public RestauranteDTO atualizar(@PathVariable Long restauranteId,
 			@RequestBody @Valid RestauranteInputDTO restauranteInput) {
 		try {
@@ -85,18 +91,21 @@ public class RestauranteController {
 		}
 	}
 	
+	@Override
 	@PutMapping("/{restauranteId}/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void ativar(@PathVariable Long restauranteId) {
 		cadastroRestaurante.ativar(restauranteId);
 	}
 	
+	@Override
 	@DeleteMapping("/{restauranteId}/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void inativar(@PathVariable Long restauranteId) {
 		cadastroRestaurante.inativar(restauranteId);
 	}
 	
+	@Override
 	@PutMapping("/ativacoes")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void ativarMultiplos(@RequestBody List<Long> restauranteIds) {
@@ -107,6 +116,7 @@ public class RestauranteController {
 		}
 	}
 	
+	@Override
 	@DeleteMapping("/ativacoes")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void inativarMultiplos(@RequestBody List<Long> restauranteIds) {
@@ -117,12 +127,14 @@ public class RestauranteController {
 		}
 	}
 	
+	@Override
 	@PutMapping("/{restauranteId}/abertura")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void abrir(@PathVariable Long restauranteId) {
 		cadastroRestaurante.abrir(restauranteId);
 	}
 	
+	@Override
 	@PutMapping("/{restauranteId}/fechamento")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void fechar(@PathVariable Long restauranteId) {

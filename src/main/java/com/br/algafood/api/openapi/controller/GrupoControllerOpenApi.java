@@ -24,7 +24,7 @@ public interface GrupoControllerOpenApi {
 	@ApiResponses({
 			@ApiResponse(responseCode = "400", description = "ID do grupo inválido", content = @Content(schema = @Schema(implementation = Problema.class))),
 			@ApiResponse(responseCode = "404", description = "Grupo não encontrado", content = @Content(schema = @Schema(implementation = Problema.class))) })
-	GrupoDTO buscar(@ApiParam(value = "ID de um grupo") Long grupoId);
+	GrupoDTO buscar(@ApiParam(value = "ID de um grupo", required = true) Long grupoId);
 
 	@ApiOperation("Cadastra um grupo")
 	@ApiResponses({ @ApiResponse(responseCode = "201", description = "Grupo cadastrado") })
@@ -33,11 +33,11 @@ public interface GrupoControllerOpenApi {
 	@ApiOperation("Atualiza um grupo por ID")
 	@ApiResponses({ @ApiResponse(responseCode = "200", description = "Grupo Atualizado"),
 			@ApiResponse(responseCode = "404", description = "Grupo não encontrado", content = @Content(schema = @Schema(implementation = Problema.class))) })
-	GrupoDTO atualizar(@ApiParam(value = "ID de um grupo") Long grupoId, GrupoInputDTO grupoInput);
+	GrupoDTO atualizar(@ApiParam(value = "ID de um grupo", required = true) Long grupoId, GrupoInputDTO grupoInput);
 
 	@ApiOperation("Exclui um grupo por ID")
 	@ApiResponses({ @ApiResponse(responseCode = "204", description = "Grupo excluído"),
 			@ApiResponse(responseCode = "404", description = "Grupo não encontrado", content = @Content(schema = @Schema(implementation = Problema.class))) })
-	void remover(@ApiParam(value = "ID de um grupo") Long grupoId);
+	void remover(@ApiParam(value = "ID de um grupo", required = true) Long grupoId);
 
 }
