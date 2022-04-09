@@ -71,7 +71,7 @@ public class ProdutoFotoController implements ProdutoFotoControllerOpenApi {
 	}
 
 	@Override
-	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE})
 	public FotoProdutoDTO buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
 		FotoProduto fotoProduto = fotoProdutoService.buscarOuFalhar(restauranteId, produtoId);
 		return assembler.toModel(fotoProduto);

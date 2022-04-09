@@ -53,7 +53,8 @@ public class SpringFoxConfig {
 				.globalResponses(HttpMethod.POST, globalPostPutResponseMessages())
 				.globalResponses(HttpMethod.PUT, globalPostPutResponseMessages())
 				.globalResponses(HttpMethod.DELETE, globalDeleteResponseMessages()).apiInfo(apiInfo())
-				.additionalModels(typeResolver.resolve(Problema.class)).ignoredParameterTypes(ServletWebRequest.class, MappingJacksonValue.class)
+				.additionalModels(typeResolver.resolve(Problema.class))
+				.ignoredParameterTypes(ServletWebRequest.class, MappingJacksonValue.class)
 				.directModelSubstitute(Pageable.class, PageableModelOpenApi.class)
 				.alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(Page.class, CozinhaDTO.class),
 						CozinhasModelOpenApi.class))
@@ -62,7 +63,10 @@ public class SpringFoxConfig {
 				.tags(new Tag("Cidades", "Gerencia as cidades"), new Tag("Grupos", "Gerencia os grupos"),
 						new Tag("Cozinhas", "Gerencia as cozinhas"),
 						new Tag("Formas de pagamento", "Gerencia as formas de pagamento"),
-						new Tag("Pedidos", "Gerencia os pedidos"), new Tag("Restaurantes", "Gerencia os restaurantes"), new Tag("Estados", "Gerencia os estados"),  new Tag("Produtos", "Gerencia os produtos"), new Tag("Usuários", "Gerencia os usuários"));
+						new Tag("Pedidos", "Gerencia os pedidos"), new Tag("Restaurantes", "Gerencia os restaurantes"),
+						new Tag("Estados", "Gerencia os estados"), new Tag("Produtos", "Gerencia os produtos"),
+						new Tag("Usuários", "Gerencia os usuários"),
+						new Tag("Estatísticas", "Estatísticas da AlgaFood"));
 	}
 
 	private List<Response> globalGetResponseMessages() {
