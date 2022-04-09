@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +22,7 @@ import com.br.algafood.api.model.UsuarioDTO;
 import com.br.algafood.api.model.input.SenhaInputDTO;
 import com.br.algafood.api.model.input.UsuarioComSenhaInputDTO;
 import com.br.algafood.api.model.input.UsuarioInputDTO;
+import com.br.algafood.api.openapi.controller.UsuarioControllerOpenApi;
 import com.br.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.br.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.br.algafood.domain.exception.NegocioException;
@@ -30,7 +32,7 @@ import com.br.algafood.domain.service.CadastroUsuarioService;
 
 @RestController
 @RequestMapping(value = "/usuarios")
-public class UsuarioController {
+public class UsuarioController implements UsuarioControllerOpenApi {
 
 	@Autowired
 	private UsuarioRepository usuarioRepository;
@@ -44,18 +46,21 @@ public class UsuarioController {
 	@Autowired
 	private UsuarioInputDTODisassembler usuarioInputDTODisassembler;
 
-	@GetMapping
+	@Override
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<UsuarioDTO> listar() {
 		return usuarioDTOAssembler.toCollectionModel(usuarioRepository.findAll());
 	}
 
-	@GetMapping("/{usuarioId}")
+	@Override
+	@GetMapping(path = "/{usuarioId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public UsuarioDTO buscar(@PathVariable Long usuarioId) {
 		Usuario usuario = cadastroUsuario.buscarOuFalhar(usuarioId);
 		return usuarioDTOAssembler.toModel(usuario);
 	}
 
-	@PostMapping
+	@Override
+	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
 	public UsuarioDTO adicionar(@RequestBody @Valid UsuarioComSenhaInputDTO usuarioInput) {
 		Usuario usuario = usuarioInputDTODisassembler.toDomainObject(usuarioInput);
@@ -63,7 +68,8 @@ public class UsuarioController {
 
 	}
 
-	@PutMapping("/{usuarioId}")
+	@Override
+	@PutMapping(path = "/{usuarioId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public UsuarioDTO atualizar(@PathVariable Long usuarioId, @RequestBody @Valid UsuarioInputDTO usuarioInput) {
 		try {
 			Usuario usuarioAtual = cadastroUsuario.buscarOuFalhar(usuarioId);
@@ -76,6 +82,7 @@ public class UsuarioController {
 		}
 	}
 	
+	@Override
 	@PutMapping("/{usuarioId}/senha")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void alterarSenha(@PathVariable Long usuarioId, @RequestBody @Valid SenhaInputDTO senha) {

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,12 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.br.algafood.api.assembler.GrupoDTOAssembler;
 import com.br.algafood.api.model.GrupoDTO;
+import com.br.algafood.api.openapi.controller.UsuarioGrupoControllerOpenApi;
 import com.br.algafood.domain.model.Usuario;
 import com.br.algafood.domain.service.CadastroUsuarioService;
 
 @RestController
 @RequestMapping(value = "/usuarios/{usuarioId}/grupos")
-public class UsuarioGrupoController {
+public class UsuarioGrupoController implements UsuarioGrupoControllerOpenApi {
 	
 	@Autowired
 	private CadastroUsuarioService cadastroUsuarioService;
@@ -27,19 +29,22 @@ public class UsuarioGrupoController {
 	@Autowired
 	private GrupoDTOAssembler assembler;
 	
-	@GetMapping
+	@Override
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<GrupoDTO> listar(@PathVariable Long usuarioId) {
 		Usuario usuario = cadastroUsuarioService.buscarOuFalhar(usuarioId);
 		return assembler.toCollectionModel(usuario.getGrupos());
 	}
 	
-	@DeleteMapping("/{grupoId}")
+	@Override
+	@DeleteMapping(path = "/{grupoId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void desassociar(@PathVariable Long usuarioId, @PathVariable Long grupoId) {
 		cadastroUsuarioService.desassociarGrupo(usuarioId, grupoId);
 	}
 	
-	@PutMapping("/{grupoId}")
+	@Override
+	@PutMapping(path = "/{grupoId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void associar(@PathVariable Long usuarioId, @PathVariable Long grupoId) {
 		cadastroUsuarioService.associarGrupo(usuarioId, grupoId);
