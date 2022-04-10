@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.br.algafood.api.ResourceUriHelper;
 import com.br.algafood.api.assembler.CidadeDTOAssembler;
 import com.br.algafood.api.assembler.CidadeInputDTODisassembler;
 import com.br.algafood.api.model.CidadeDTO;
@@ -46,8 +48,9 @@ public class CidadeController implements CidadeControllerOpenApi {
 
 	@Override
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<CidadeDTO> listar() {
-		return assembler.toCollectionModel(cidadeRepository.findAll());
+	public CollectionModel<CidadeDTO> listar() {
+		List<Cidade> cidades = cidadeRepository.findAll();
+		return assembler.toCollectionModel(cidades);
 	}
 
 	@Override
@@ -64,8 +67,12 @@ public class CidadeController implements CidadeControllerOpenApi {
 		try {
 			Cidade cidade = disassembler.toDomainObject(cidadeInput);
 			cidade = cadastroCidade.salvar(cidade);
+			
+			CidadeDTO cidadeDTO = assembler.toModel(cidade);
+			
+			ResourceUriHelper.addUriInResponseHeader(cidadeDTO.getId());
 
-			return assembler.toModel(cidade);
+			return cidadeDTO;
 		} catch (EstadoNaoEncontradoException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}
