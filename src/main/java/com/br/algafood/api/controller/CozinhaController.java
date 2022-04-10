@@ -1,13 +1,12 @@
 package com.br.algafood.api.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -45,16 +44,21 @@ public class CozinhaController implements CozinhaControllerOpenApi {
 	@Autowired
 	private CozinhaInputDTODisassembler disassembler;
 	
+	@Autowired
+	private PagedResourcesAssembler<Cozinha> pagedResourcesAssembler;
+	
 	@Override
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public Page<CozinhaDTO> listar(Pageable pageable) {
+	public PagedModel<CozinhaDTO> listar(Pageable pageable) {
 		Page<Cozinha> cozinhas = cozinhaRepository.findAll(pageable);
 		
-		List<CozinhaDTO> cozinhasDTO = assembler.toCollectionModel(cozinhas.getContent());
+		//List<CozinhaDTO> cozinhasDTO = assembler.toCollectionModel(cozinhas.getContent());
+		//Page<CozinhaDTO> cozinhasPage = new PageImpl<CozinhaDTO>(cozinhasDTO, pageable, cozinhas.getTotalElements());
 		
-		Page<CozinhaDTO> cozinhasPage = new PageImpl<CozinhaDTO>(cozinhasDTO, pageable, cozinhas.getTotalElements());
+		PagedModel<CozinhaDTO> cozinhasPagedModel = pagedResourcesAssembler
+				.toModel(cozinhas, assembler);
 		
-		return cozinhasPage;
+		return cozinhasPagedModel;
 	}
 	
 	@Override

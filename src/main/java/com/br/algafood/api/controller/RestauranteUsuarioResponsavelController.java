@@ -1,5 +1,8 @@
 package com.br.algafood.api.controller;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
@@ -22,30 +25,31 @@ import com.br.algafood.domain.service.CadastroRestauranteService;
 @RequestMapping(value = "/restaurantes/{restauranteId}/responsaveis")
 public class RestauranteUsuarioResponsavelController implements RestauranteUsuarioResponsavelControllerOpenApi {
 
-    @Autowired
-    private CadastroRestauranteService cadastroRestaurante;
-    
-    @Autowired
-    private UsuarioDTOAssembler usuarioModelAssembler;
-    
-    @Override
+	@Autowired
+	private CadastroRestauranteService cadastroRestaurante;
+
+	@Autowired
+	private UsuarioDTOAssembler usuarioModelAssembler;
+
+	@Override
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public CollectionModel<UsuarioDTO> listar(@PathVariable Long restauranteId) {
-        Restaurante restaurante = cadastroRestaurante.buscarOuFalhar(restauranteId);
-        return usuarioModelAssembler.toCollectionModel(restaurante.getResponsaveis());
-    }
-    
-    @Override
+	public CollectionModel<UsuarioDTO> listar(@PathVariable Long restauranteId) {
+		Restaurante restaurante = cadastroRestaurante.buscarOuFalhar(restauranteId);
+		return usuarioModelAssembler.toCollectionModel(restaurante.getResponsaveis()).removeLinks().add(
+				linkTo(methodOn(RestauranteUsuarioResponsavelController.class).listar(restauranteId)).withSelfRel());
+	}
+
+	@Override
 	@DeleteMapping(path = "/{usuarioId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void desassociar(@PathVariable Long restauranteId, @PathVariable Long usuarioId) {
-        cadastroRestaurante.desassociarResponsavel(restauranteId, usuarioId);
-    }
-    
-    @Override
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void desassociar(@PathVariable Long restauranteId, @PathVariable Long usuarioId) {
+		cadastroRestaurante.desassociarResponsavel(restauranteId, usuarioId);
+	}
+
+	@Override
 	@PutMapping(path = "/{usuarioId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void associar(@PathVariable Long restauranteId, @PathVariable Long usuarioId) {
-        cadastroRestaurante.associarResponsavel(restauranteId, usuarioId);
-    }
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void associar(@PathVariable Long restauranteId, @PathVariable Long usuarioId) {
+		cadastroRestaurante.associarResponsavel(restauranteId, usuarioId);
+	}
 }
