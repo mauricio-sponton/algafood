@@ -1,8 +1,5 @@
 package com.br.algafood.api.assembler;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,9 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
+import com.br.algafood.api.AlgaLinks;
 import com.br.algafood.api.controller.PedidoController;
-import com.br.algafood.api.controller.RestauranteController;
-import com.br.algafood.api.controller.UsuarioController;
 import com.br.algafood.api.model.PedidoResumoDTO;
 import com.br.algafood.domain.model.Pedido;
 
@@ -22,6 +18,9 @@ public class PedidoResumoDTOAssembler extends RepresentationModelAssemblerSuppor
 
 	@Autowired
 	private ModelMapper modelMapper;
+	
+	@Autowired
+	private AlgaLinks algaLinks;
 
 	public PedidoResumoDTOAssembler() {
 		super(PedidoController.class, PedidoResumoDTO.class);
@@ -32,13 +31,12 @@ public class PedidoResumoDTOAssembler extends RepresentationModelAssemblerSuppor
 		PedidoResumoDTO pedidoResumoDTO = createModelWithId(pedido.getCodigo(), pedido);
 		modelMapper.map(pedido, pedidoResumoDTO);
 
-		pedidoResumoDTO.add(linkTo(PedidoController.class).withRel("pedidos"));
+		pedidoResumoDTO.add(algaLinks.linkToPedidos());
 
-		pedidoResumoDTO.getRestaurante().add(
-				linkTo(methodOn(RestauranteController.class).buscar(pedido.getRestaurante().getId())).withSelfRel());
+		pedidoResumoDTO.getRestaurante().add(algaLinks.linkToRestaurante(pedido.getRestaurante().getId()));
 
 		pedidoResumoDTO.getCliente()
-				.add(linkTo(methodOn(UsuarioController.class).buscar(pedido.getCliente().getId())).withSelfRel());
+				.add(algaLinks.linkToUsuario(pedido.getCliente().getId()));
 
 		return pedidoResumoDTO;
 	}

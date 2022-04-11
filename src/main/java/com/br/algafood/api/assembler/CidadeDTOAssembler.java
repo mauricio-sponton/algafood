@@ -1,7 +1,6 @@
 package com.br.algafood.api.assembler;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +8,8 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
+import com.br.algafood.api.AlgaLinks;
 import com.br.algafood.api.controller.CidadeController;
-import com.br.algafood.api.controller.EstadoController;
 import com.br.algafood.api.model.CidadeDTO;
 import com.br.algafood.domain.model.Cidade;
 
@@ -19,6 +18,9 @@ public class CidadeDTOAssembler extends RepresentationModelAssemblerSupport<Cida
 
 	@Autowired
 	private ModelMapper modelMapper;
+	
+	@Autowired
+	private AlgaLinks algaLinks;
 
 	public CidadeDTOAssembler() {
 		super(CidadeController.class, CidadeDTO.class);
@@ -30,9 +32,9 @@ public class CidadeDTOAssembler extends RepresentationModelAssemblerSupport<Cida
 		CidadeDTO cidadeDTO = createModelWithId(cidade.getId(), cidade);
 
 		modelMapper.map(cidade, cidadeDTO);
-		cidadeDTO.add(linkTo(methodOn(CidadeController.class).listar()).withRel("cidades"));
+		cidadeDTO.add(algaLinks.linkToCidades("cidades"));
 		cidadeDTO.getEstado()
-				.add(linkTo(methodOn(EstadoController.class).buscar(cidadeDTO.getEstado().getId())).withSelfRel());
+				.add(algaLinks.linkToEstado(cidadeDTO.getEstado().getId()));
 
 		return cidadeDTO;
 	}

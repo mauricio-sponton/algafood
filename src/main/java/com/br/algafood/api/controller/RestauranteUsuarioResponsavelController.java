@@ -1,8 +1,5 @@
 package com.br.algafood.api.controller;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
@@ -15,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.br.algafood.api.AlgaLinks;
 import com.br.algafood.api.assembler.UsuarioDTOAssembler;
 import com.br.algafood.api.model.UsuarioDTO;
 import com.br.algafood.api.openapi.controller.RestauranteUsuarioResponsavelControllerOpenApi;
@@ -30,13 +28,16 @@ public class RestauranteUsuarioResponsavelController implements RestauranteUsuar
 
 	@Autowired
 	private UsuarioDTOAssembler usuarioModelAssembler;
+	
+	@Autowired
+	private AlgaLinks algaLinks;
 
 	@Override
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public CollectionModel<UsuarioDTO> listar(@PathVariable Long restauranteId) {
 		Restaurante restaurante = cadastroRestaurante.buscarOuFalhar(restauranteId);
 		return usuarioModelAssembler.toCollectionModel(restaurante.getResponsaveis()).removeLinks().add(
-				linkTo(methodOn(RestauranteUsuarioResponsavelController.class).listar(restauranteId)).withSelfRel());
+				algaLinks.linkToResponsaveisRestaurante(restauranteId));
 	}
 
 	@Override

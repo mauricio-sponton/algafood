@@ -1,12 +1,11 @@
 package com.br.algafood.api.assembler;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
+import com.br.algafood.api.AlgaLinks;
 import com.br.algafood.api.controller.CozinhaController;
 import com.br.algafood.api.model.CozinhaDTO;
 import com.br.algafood.domain.model.Cozinha;
@@ -17,6 +16,9 @@ public class CozinhaDTOAssembler extends RepresentationModelAssemblerSupport<Coz
 	@Autowired
 	private ModelMapper modelMapper;
 	
+	@Autowired
+	private AlgaLinks algaLinks;
+	
 	public CozinhaDTOAssembler() {
 		super(CozinhaController.class, CozinhaDTO.class);
 	}
@@ -26,7 +28,7 @@ public class CozinhaDTOAssembler extends RepresentationModelAssemblerSupport<Coz
 		CozinhaDTO cozinhaDTO = createModelWithId(cozinha.getId(), cozinha);
 		modelMapper.map(cozinha, cozinhaDTO);
 		
-		cozinhaDTO.add(linkTo(CozinhaController.class).withRel("cozinhas"));
+		cozinhaDTO.add(algaLinks.linkToCozinhas("cozinhas"));
 		
 		return cozinhaDTO;
 	}
