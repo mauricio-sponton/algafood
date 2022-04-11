@@ -82,6 +82,18 @@ public class Pedido extends AbstractAggregateRoot<Pedido>{
 	@OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
 	private List<ItemPedido> itens = new ArrayList<>();
 	
+	public boolean podeSerConfirmado() {
+		return getStatus().podeAlterarPara(StatusPedido.CONFIRMADO);
+	}
+	
+	public boolean podeSerEntregue() {
+		return getStatus().podeAlterarPara(StatusPedido.ENTREGUE);
+	}
+	
+	public boolean podeSerCancelado() {
+		return getStatus().podeAlterarPara(StatusPedido.CANCELADO);
+	}
+	
 	public void calcularValorTotal() {
 	    getItens().forEach(ItemPedido::calcularPrecoTotal);
 	    
