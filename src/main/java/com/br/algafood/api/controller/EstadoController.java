@@ -1,10 +1,9 @@
 package com.br.algafood.api.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -44,7 +43,7 @@ public class EstadoController implements EstadoControllerOpenApi {
 	
 	@Override
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<EstadoDTO> listar() {
+	public CollectionModel<EstadoDTO> listar() {
 		return assembler.toCollectionModel(estadoRepository.findAll());
 	}
 	
