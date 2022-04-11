@@ -22,6 +22,7 @@ public class EstadoDTOAssembler extends RepresentationModelAssemblerSupport<Esta
 		super(EstadoController.class, EstadoDTO.class);
 	}
 	
+	@Override
 	public EstadoDTO toModel(Estado estado) {
 		EstadoDTO estadoDTO = createModelWithId(estado.getId(), estado);
 		modelMapper.map(estado, estadoDTO);

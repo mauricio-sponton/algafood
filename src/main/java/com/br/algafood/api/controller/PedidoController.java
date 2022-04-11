@@ -8,8 +8,10 @@ import javax.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJacksonValue;
@@ -60,14 +62,19 @@ public class PedidoController implements PedidoControllerOpenApi {
 	@Autowired
 	private PedidoInputDTODisassembler pedidoInputDisassembler;
 	
+	@Autowired
+	private PagedResourcesAssembler<Pedido> pagedResourcesAssembler;
+	
 	@Override
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public Page<PedidoResumoDTO> pesquisar(PedidoFilter filtro, Pageable pageable) {
-		pageable = traduzirPageable(pageable);
-		Page<Pedido> pedidos = pedidoRepository.findAll(PedidoSpecification.usandoFiltro(filtro), pageable);
-		List<PedidoResumoDTO> pedidosDTO = pedidoResumoAssembler.toCollectionModel(pedidos.getContent());
-		Page<PedidoResumoDTO> pedidosPage = new PageImpl<PedidoResumoDTO>(pedidosDTO, pageable, pedidos.getTotalElements());
-		return pedidosPage;
+	public PagedModel<PedidoResumoDTO> pesquisar(PedidoFilter filtro, 
+	        @PageableDefault(size = 10) Pageable pageable) {
+	    pageable = traduzirPageable(pageable);
+	    
+	    Page<Pedido> pedidosPage = pedidoRepository.findAll(
+	            PedidoSpecification.usandoFiltro(filtro), pageable);
+	    
+	    return pagedResourcesAssembler.toModel(pedidosPage, pedidoResumoAssembler);
 	}
 	
 	@Override

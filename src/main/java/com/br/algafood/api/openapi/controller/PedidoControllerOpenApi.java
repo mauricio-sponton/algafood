@@ -1,7 +1,7 @@
 package com.br.algafood.api.openapi.controller;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.converter.json.MappingJacksonValue;
 
 import com.br.algafood.api.exception.Problema;
@@ -24,7 +24,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 public interface PedidoControllerOpenApi {
 
 	@ApiOperation("Pesquisa os pedidos")
-	Page<PedidoResumoDTO> pesquisar(PedidoFilter filtro, Pageable pageable);
+	PagedModel<PedidoResumoDTO> pesquisar(PedidoFilter filtro, Pageable pageable);
 
 	@ApiImplicitParams({
 			@ApiImplicitParam(value = "Nomes das propriedades para filtrar na resposta, separados por vírgula", name = "campos", paramType = "query", type = "string") })
