@@ -1,6 +1,7 @@
 package com.br.algafood.api.openapi.controller;
 
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.http.ResponseEntity;
 
 import com.br.algafood.api.exception.Problema;
 import com.br.algafood.api.model.UsuarioDTO;
@@ -24,12 +25,12 @@ public interface RestauranteUsuarioResponsavelControllerOpenApi {
 	@ApiResponses({
 			@ApiResponse(responseCode = "204", description = "Desassociação realizada com sucesso", content = @Content(schema = @Schema(implementation = Problema.class))),
 			@ApiResponse(responseCode = "404", description = "Restaurante não encontrado", content = @Content(schema = @Schema(implementation = Problema.class))) })
-	void desassociar(@ApiParam(value = "ID de um restaurante", required = true) Long restauranteId, @ApiParam(value = "ID de um usuario", required = true) Long usuarioId);
+	ResponseEntity<Void> desassociar(@ApiParam(value = "ID de um restaurante", required = true) Long restauranteId, @ApiParam(value = "ID de um usuario", required = true) Long usuarioId);
 
 	@ApiOperation("Associação de restaurante com usuário responsável")
 	@ApiResponses({
 			@ApiResponse(responseCode = "204", description = "Associação realizada com sucesso", content = @Content(schema = @Schema(implementation = Problema.class))),
 			@ApiResponse(responseCode = "404", description = "Restaurante não encontrado", content = @Content(schema = @Schema(implementation = Problema.class))) })
-	void associar(@ApiParam(value = "ID de um restaurante", required = true) Long restauranteId, @ApiParam(value = "ID de um usuário", required = true) Long usuarioId);
+	ResponseEntity<Void> associar(@ApiParam(value = "ID de um restaurante", required = true) Long restauranteId, @ApiParam(value = "ID de um usuário", required = true) Long usuarioId);
 
 }
