@@ -17,6 +17,7 @@ import com.br.algafood.api.controller.EstadoController;
 import com.br.algafood.api.controller.FluxoPedidoController;
 import com.br.algafood.api.controller.FormaPagamentoController;
 import com.br.algafood.api.controller.PedidoController;
+import com.br.algafood.api.controller.ProdutoFotoController;
 import com.br.algafood.api.controller.RestauranteController;
 import com.br.algafood.api.controller.RestauranteFormaPagamentoController;
 import com.br.algafood.api.controller.RestauranteProdutoController;
@@ -235,6 +236,15 @@ public class AlgaLinks {
 
 	public Link linkToProdutos(Long restauranteId) {
 	    return linkToProdutos(restauranteId, IanaLinkRelations.SELF.value());
+	}
+	
+	public Link linkToFotoProduto(Long restauranteId, Long produtoId, String rel) {
+	    return linkTo(methodOn(ProdutoFotoController.class)
+	            .buscar(restauranteId, produtoId)).withRel(rel);
+	}
+
+	public Link linkToFotoProduto(Long restauranteId, Long produtoId) {
+	    return linkToFotoProduto(restauranteId, produtoId, IanaLinkRelations.SELF.value());
 	}
 
 }
