@@ -7,8 +7,10 @@ import java.util.function.Consumer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.Links;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,11 +18,28 @@ import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.context.request.ServletWebRequest;
 
 import com.br.algafood.api.exception.Problema;
+import com.br.algafood.api.model.CidadeDTO;
 import com.br.algafood.api.model.CozinhaDTO;
+import com.br.algafood.api.model.EstadoDTO;
+import com.br.algafood.api.model.FormaPagamentoDTO;
+import com.br.algafood.api.model.GrupoDTO;
 import com.br.algafood.api.model.PedidoResumoDTO;
+import com.br.algafood.api.model.PermissaoDTO;
+import com.br.algafood.api.model.ProdutoDTO;
+import com.br.algafood.api.model.RestauranteDTO;
+import com.br.algafood.api.model.UsuarioDTO;
+import com.br.algafood.api.openapi.model.CidadesModelOpenApi;
 import com.br.algafood.api.openapi.model.CozinhasModelOpenApi;
+import com.br.algafood.api.openapi.model.EstadosModelOpenApi;
+import com.br.algafood.api.openapi.model.FormasPagamentoModelOpenApi;
+import com.br.algafood.api.openapi.model.GruposModelOpenApi;
+import com.br.algafood.api.openapi.model.LinksModelOpenAPi;
 import com.br.algafood.api.openapi.model.PageableModelOpenApi;
 import com.br.algafood.api.openapi.model.PedidosResumoModelOpenApi;
+import com.br.algafood.api.openapi.model.PermissoesModelOpenApi;
+import com.br.algafood.api.openapi.model.ProdutosModelOpenApi;
+import com.br.algafood.api.openapi.model.RestaurantesModelOpenApi;
+import com.br.algafood.api.openapi.model.UsuariosModelOpenApi;
 import com.fasterxml.classmate.TypeResolver;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
@@ -56,10 +75,38 @@ public class SpringFoxConfig {
 				.additionalModels(typeResolver.resolve(Problema.class))
 				.ignoredParameterTypes(ServletWebRequest.class, MappingJacksonValue.class)
 				.directModelSubstitute(Pageable.class, PageableModelOpenApi.class)
-				.alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(Page.class, CozinhaDTO.class),
+				.directModelSubstitute(Links.class, LinksModelOpenAPi.class)
+				.alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(PagedModel.class, CozinhaDTO.class),
 						CozinhasModelOpenApi.class))
-				.alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(Page.class, PedidoResumoDTO.class),
+				.alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(PagedModel.class, PedidoResumoDTO.class),
 						PedidosResumoModelOpenApi.class))
+				.alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(CollectionModel.class, CidadeDTO.class),
+						CidadesModelOpenApi.class))
+				.alternateTypeRules(AlternateTypeRules.newRule(
+				        typeResolver.resolve(CollectionModel.class, EstadoDTO.class),
+				        EstadosModelOpenApi.class))
+				.alternateTypeRules(AlternateTypeRules.newRule(
+					    typeResolver.resolve(CollectionModel.class, FormaPagamentoDTO.class),
+					    FormasPagamentoModelOpenApi.class))
+				.alternateTypeRules(AlternateTypeRules.newRule(
+					    typeResolver.resolve(CollectionModel.class, GrupoDTO.class),
+					    GruposModelOpenApi.class))
+
+					.alternateTypeRules(AlternateTypeRules.newRule(
+					        typeResolver.resolve(CollectionModel.class, PermissaoDTO.class),
+					        PermissoesModelOpenApi.class))
+					
+					.alternateTypeRules(AlternateTypeRules.newRule(
+						    typeResolver.resolve(CollectionModel.class, ProdutoDTO.class),
+						    ProdutosModelOpenApi.class))
+					
+					.alternateTypeRules(AlternateTypeRules.newRule(
+						    typeResolver.resolve(CollectionModel.class, RestauranteDTO.class),
+						    RestaurantesModelOpenApi.class))
+
+						.alternateTypeRules(AlternateTypeRules.newRule(
+						        typeResolver.resolve(CollectionModel.class, UsuarioDTO.class),
+						        UsuariosModelOpenApi.class))
 				.tags(new Tag("Cidades", "Gerencia as cidades"), new Tag("Grupos", "Gerencia os grupos"),
 						new Tag("Cozinhas", "Gerencia as cozinhas"),
 						new Tag("Formas de pagamento", "Gerencia as formas de pagamento"),
