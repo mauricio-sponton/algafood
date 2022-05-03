@@ -24,6 +24,7 @@ import com.br.algafood.api.assembler.CozinhaInputDTODisassembler;
 import com.br.algafood.api.model.CozinhaDTO;
 import com.br.algafood.api.model.input.CozinhaInputDTO;
 import com.br.algafood.api.openapi.controller.CozinhaControllerOpenApi;
+import com.br.algafood.core.security.CheckSecurity;
 import com.br.algafood.domain.model.Cozinha;
 import com.br.algafood.domain.repository.CozinhaRepository;
 import com.br.algafood.domain.service.CadastroCozinhaService;
@@ -50,6 +51,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
 	@Autowired
 	private PagedResourcesAssembler<Cozinha> pagedResourcesAssembler;
 	
+	@CheckSecurity.Cozinhas.PodeConsultar
 	@Override
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public PagedModel<CozinhaDTO> listar(Pageable pageable) {
@@ -65,6 +67,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
 		return cozinhasPagedModel;
 	}
 	
+	@CheckSecurity.Cozinhas.PodeConsultar
 	@Override
 	@GetMapping(path = "/{cozinhaId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public CozinhaDTO buscar(@PathVariable Long cozinhaId) {
@@ -72,6 +75,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
 		return assembler.toModel(cozinha);
 	}
 	
+	@CheckSecurity.Cozinhas.PodeEditar
 	@Override
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
@@ -80,6 +84,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
 		return assembler.toModel(cadastroCozinha.salvar(cozinha));
 	}
 	
+	@CheckSecurity.Cozinhas.PodeEditar
 	@Override
 	@PutMapping(path = "/{cozinhaId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public CozinhaDTO atualizar(@PathVariable Long cozinhaId,
@@ -92,6 +97,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
 		return assembler.toModel(cozinhaAtual);
 	}
 	
+	@CheckSecurity.Cozinhas.PodeEditar
 	@Override
 	@DeleteMapping("/{cozinhaId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
