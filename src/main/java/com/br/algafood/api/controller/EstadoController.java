@@ -21,6 +21,7 @@ import com.br.algafood.api.assembler.EstadoInputDTODisassembler;
 import com.br.algafood.api.model.EstadoDTO;
 import com.br.algafood.api.model.input.EstadoInputDTO;
 import com.br.algafood.api.openapi.controller.EstadoControllerOpenApi;
+import com.br.algafood.core.security.CheckSecurity;
 import com.br.algafood.domain.model.Estado;
 import com.br.algafood.domain.repository.EstadoRepository;
 import com.br.algafood.domain.service.CadastroEstadoService;
@@ -41,12 +42,14 @@ public class EstadoController implements EstadoControllerOpenApi {
 	@Autowired
 	private EstadoInputDTODisassembler disassembler;
 	
+	@CheckSecurity.Estados.PodeConsultar
 	@Override
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public CollectionModel<EstadoDTO> listar() {
 		return assembler.toCollectionModel(estadoRepository.findAll());
 	}
 	
+	@CheckSecurity.Estados.PodeConsultar
 	@Override
 	@GetMapping(path = "/{estadoId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public EstadoDTO buscar(@PathVariable Long estadoId) {
@@ -54,6 +57,7 @@ public class EstadoController implements EstadoControllerOpenApi {
 		return assembler.toModel(estado);
 	}
 	
+	@CheckSecurity.Estados.PodeEditar
 	@Override
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
@@ -63,6 +67,7 @@ public class EstadoController implements EstadoControllerOpenApi {
 		return assembler.toModel(estado);
 	}
 	
+	@CheckSecurity.Estados.PodeEditar
 	@Override
 	@PutMapping(path ="/{estadoId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public EstadoDTO atualizar(@PathVariable Long estadoId,
@@ -76,6 +81,7 @@ public class EstadoController implements EstadoControllerOpenApi {
 		return assembler.toModel(estadoAtual);
 	}
 	
+	@CheckSecurity.Estados.PodeEditar
 	@Override
 	@DeleteMapping("/{estadoId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)

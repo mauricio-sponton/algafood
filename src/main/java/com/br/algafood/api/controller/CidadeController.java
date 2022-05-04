@@ -24,6 +24,7 @@ import com.br.algafood.api.assembler.CidadeInputDTODisassembler;
 import com.br.algafood.api.model.CidadeDTO;
 import com.br.algafood.api.model.input.CidadeInputDTO;
 import com.br.algafood.api.openapi.controller.CidadeControllerOpenApi;
+import com.br.algafood.core.security.CheckSecurity;
 import com.br.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.br.algafood.domain.exception.NegocioException;
 import com.br.algafood.domain.model.Cidade;
@@ -46,6 +47,7 @@ public class CidadeController implements CidadeControllerOpenApi {
 	@Autowired
 	private CidadeInputDTODisassembler disassembler;
 
+	@CheckSecurity.Cidades.PodeConsultar
 	@Override
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public CollectionModel<CidadeDTO> listar() {
@@ -53,6 +55,7 @@ public class CidadeController implements CidadeControllerOpenApi {
 		return assembler.toCollectionModel(cidades);
 	}
 
+	@CheckSecurity.Cidades.PodeConsultar
 	@Override
 	@GetMapping(path = "/{cidadeId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public CidadeDTO buscar(@PathVariable Long cidadeId) {
@@ -60,6 +63,7 @@ public class CidadeController implements CidadeControllerOpenApi {
 		return assembler.toModel(cidade);
 	}
 
+	@CheckSecurity.Cidades.PodeEditar
 	@Override
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
@@ -78,6 +82,7 @@ public class CidadeController implements CidadeControllerOpenApi {
 		}
 	}
 
+	@CheckSecurity.Cidades.PodeEditar
 	@Override
 	@PutMapping(path = "/{cidadeId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public CidadeDTO atualizar(@PathVariable Long cidadeId, @RequestBody @Valid CidadeInputDTO cidadeInput) {
@@ -96,6 +101,7 @@ public class CidadeController implements CidadeControllerOpenApi {
 		}
 	}
 
+	@CheckSecurity.Cidades.PodeEditar
 	@Override
 	@DeleteMapping("/{cidadeId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
