@@ -22,6 +22,7 @@ import com.br.algafood.api.model.input.SenhaInputDTO;
 import com.br.algafood.api.model.input.UsuarioComSenhaInputDTO;
 import com.br.algafood.api.model.input.UsuarioInputDTO;
 import com.br.algafood.api.openapi.controller.UsuarioControllerOpenApi;
+import com.br.algafood.core.security.CheckSecurity;
 import com.br.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.br.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.br.algafood.domain.exception.NegocioException;
@@ -45,12 +46,14 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 	@Autowired
 	private UsuarioInputDTODisassembler usuarioInputDTODisassembler;
 
+	@CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
 	@Override
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public CollectionModel<UsuarioDTO> listar() {
 		return usuarioDTOAssembler.toCollectionModel(usuarioRepository.findAll());
 	}
 
+	@CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
 	@Override
 	@GetMapping(path = "/{usuarioId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public UsuarioDTO buscar(@PathVariable Long usuarioId) {
@@ -58,6 +61,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 		return usuarioDTOAssembler.toModel(usuario);
 	}
 
+	
 	@Override
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
@@ -67,6 +71,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 
 	}
 
+	@CheckSecurity.UsuariosGruposPermissoes.PodeAlterarUsuario
 	@Override
 	@PutMapping(path = "/{usuarioId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public UsuarioDTO atualizar(@PathVariable Long usuarioId, @RequestBody @Valid UsuarioInputDTO usuarioInput) {
@@ -81,6 +86,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 		}
 	}
 	
+	@CheckSecurity.UsuariosGruposPermissoes.PodeAlterarPropriaSenha
 	@Override
 	@PutMapping("/{usuarioId}/senha")
     @ResponseStatus(HttpStatus.NO_CONTENT)

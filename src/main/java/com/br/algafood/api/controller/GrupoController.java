@@ -21,6 +21,7 @@ import com.br.algafood.api.assembler.GrupoInputDTODisassembler;
 import com.br.algafood.api.model.GrupoDTO;
 import com.br.algafood.api.model.input.GrupoInputDTO;
 import com.br.algafood.api.openapi.controller.GrupoControllerOpenApi;
+import com.br.algafood.core.security.CheckSecurity;
 import com.br.algafood.domain.model.Grupo;
 import com.br.algafood.domain.repository.GrupoRepository;
 import com.br.algafood.domain.service.CadastroGrupoService;
@@ -41,12 +42,14 @@ public class GrupoController implements GrupoControllerOpenApi {
 	@Autowired
 	private GrupoInputDTODisassembler disassembler;
 	
+	@CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
 	@Override
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public CollectionModel<GrupoDTO> listar() {
 		return assembler.toCollectionModel(grupoRepository.findAll());
 	}
 	
+	@CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
 	@Override
 	@GetMapping(path = "/{grupoId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public GrupoDTO buscar(@PathVariable Long grupoId) {
@@ -54,6 +57,7 @@ public class GrupoController implements GrupoControllerOpenApi {
 		return assembler.toModel(grupo);
 	}
 	
+	@CheckSecurity.UsuariosGruposPermissoes.PodeEditar
 	@Override
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
@@ -63,6 +67,7 @@ public class GrupoController implements GrupoControllerOpenApi {
 		return assembler.toModel(grupo);
 	}
 	
+	@CheckSecurity.UsuariosGruposPermissoes.PodeEditar
 	@Override
 	@PutMapping(path = "/{grupoId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public GrupoDTO atualizar(@PathVariable Long grupoId,
@@ -76,6 +81,7 @@ public class GrupoController implements GrupoControllerOpenApi {
 		return assembler.toModel(grupoAtual);
 	}
 	
+	@CheckSecurity.UsuariosGruposPermissoes.PodeEditar
 	@Override
 	@DeleteMapping("/{grupoId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
