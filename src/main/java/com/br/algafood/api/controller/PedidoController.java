@@ -34,6 +34,7 @@ import com.br.algafood.api.openapi.controller.PedidoControllerOpenApi;
 import com.br.algafood.core.data.PageWrapper;
 import com.br.algafood.core.data.PageableTranslator;
 import com.br.algafood.core.security.AlgaSecurity;
+import com.br.algafood.core.security.CheckSecurity;
 import com.br.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.br.algafood.domain.exception.NegocioException;
 import com.br.algafood.domain.filter.PedidoFilter;
@@ -70,6 +71,7 @@ public class PedidoController implements PedidoControllerOpenApi {
 	@Autowired
 	private AlgaSecurity algaSecurity;
 	
+	@CheckSecurity.Pedidos.PodePesquisar
 	@Override
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public PagedModel<PedidoResumoDTO> pesquisar(PedidoFilter filtro, 
@@ -104,6 +106,7 @@ public class PedidoController implements PedidoControllerOpenApi {
 		return pedidosWrapper;
 	}
 	
+	@CheckSecurity.Pedidos.PodeBuscar
 	@Override
 	@GetMapping(path = "/{codigoPedido}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public PedidoDTO buscar(@PathVariable String codigoPedido) {
