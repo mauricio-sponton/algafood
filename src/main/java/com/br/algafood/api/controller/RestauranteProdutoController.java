@@ -24,6 +24,7 @@ import com.br.algafood.api.assembler.ProdutoInputDTODisassembler;
 import com.br.algafood.api.model.ProdutoDTO;
 import com.br.algafood.api.model.input.ProdutoInputDTO;
 import com.br.algafood.api.openapi.controller.RestauranteProdutoControllerOpenApi;
+import com.br.algafood.core.security.CheckSecurity;
 import com.br.algafood.domain.model.Produto;
 import com.br.algafood.domain.model.Restaurante;
 import com.br.algafood.domain.repository.ProdutoRepository;
@@ -53,6 +54,7 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
 	private AlgaLinks algaLinks;
 	
 	
+	@CheckSecurity.Restaurantes.PodeConsultar
 	@Override
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public CollectionModel<ProdutoDTO> listar(@PathVariable Long restauranteId, @RequestParam(required = false) Boolean incluirInativos) {
@@ -69,6 +71,7 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
 		return assembler.toCollectionModel(produtos).add(algaLinks.linkToProdutos(restauranteId));
 	}
 	
+	@CheckSecurity.Restaurantes.PodeConsultar
 	@Override
 	@GetMapping(path = "/{produtoId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ProdutoDTO buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
@@ -76,6 +79,7 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
 		return assembler.toModel(produto);
 	}
 	
+	@CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
 	@Override
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
@@ -91,6 +95,7 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
         return assembler.toModel(produto);
     }
     
+	@CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
     @Override
 	@PutMapping(path = "/{produtoId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ProdutoDTO atualizar(@PathVariable Long restauranteId, @PathVariable Long produtoId,

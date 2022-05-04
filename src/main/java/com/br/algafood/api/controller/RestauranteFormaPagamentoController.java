@@ -17,6 +17,7 @@ import com.br.algafood.api.AlgaLinks;
 import com.br.algafood.api.assembler.FormaPagamentoDTOAssembler;
 import com.br.algafood.api.model.FormaPagamentoDTO;
 import com.br.algafood.api.openapi.controller.RestauranteFormaPagamentoControllerOpenApi;
+import com.br.algafood.core.security.CheckSecurity;
 import com.br.algafood.domain.model.Restaurante;
 import com.br.algafood.domain.service.CadastroRestauranteService;
 
@@ -33,6 +34,7 @@ public class RestauranteFormaPagamentoController implements RestauranteFormaPaga
 	@Autowired
 	private AlgaLinks algaLinks;
 
+	@CheckSecurity.Restaurantes.PodeConsultar
 	@Override
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public CollectionModel<FormaPagamentoDTO> listar(@PathVariable Long restauranteId) {
@@ -51,6 +53,7 @@ public class RestauranteFormaPagamentoController implements RestauranteFormaPaga
 		return formasPagamentoModel;
 	}
 
+	@CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
 	@Override
 	@DeleteMapping(path = "/{formaPagamentoId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
@@ -59,6 +62,7 @@ public class RestauranteFormaPagamentoController implements RestauranteFormaPaga
 		return ResponseEntity.noContent().build();
 	}
 
+	@CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
 	@Override
 	@PutMapping(path = "/{formaPagamentoId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)

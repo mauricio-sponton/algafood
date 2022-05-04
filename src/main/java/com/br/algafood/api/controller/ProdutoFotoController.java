@@ -27,6 +27,7 @@ import com.br.algafood.api.assembler.FotoProdutoDTOAssembler;
 import com.br.algafood.api.model.FotoProdutoDTO;
 import com.br.algafood.api.model.input.ProdutoFotoInputDTO;
 import com.br.algafood.api.openapi.controller.ProdutoFotoControllerOpenApi;
+import com.br.algafood.core.security.CheckSecurity;
 import com.br.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.br.algafood.domain.model.FotoProduto;
 import com.br.algafood.domain.model.Produto;
@@ -51,6 +52,7 @@ public class ProdutoFotoController implements ProdutoFotoControllerOpenApi {
 	@Autowired
 	private FotoStorageService fotoStorageService;
 
+	@CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
 	@Override
 	@PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public FotoProdutoDTO atualizarFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId,
@@ -70,6 +72,7 @@ public class ProdutoFotoController implements ProdutoFotoControllerOpenApi {
 		return assembler.toModel(fotoProdutoSalva);
 	}
 
+	@CheckSecurity.Restaurantes.PodeConsultar
 	@Override
 	@GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE})
 	public FotoProdutoDTO buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
@@ -105,6 +108,7 @@ public class ProdutoFotoController implements ProdutoFotoControllerOpenApi {
 
 	}
 
+	@CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
 	@Override
 	@DeleteMapping
 	@ResponseStatus(HttpStatus.NO_CONTENT)

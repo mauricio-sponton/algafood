@@ -17,6 +17,7 @@ import com.br.algafood.api.AlgaLinks;
 import com.br.algafood.api.assembler.UsuarioDTOAssembler;
 import com.br.algafood.api.model.UsuarioDTO;
 import com.br.algafood.api.openapi.controller.RestauranteUsuarioResponsavelControllerOpenApi;
+import com.br.algafood.core.security.CheckSecurity;
 import com.br.algafood.domain.model.Restaurante;
 import com.br.algafood.domain.service.CadastroRestauranteService;
 
@@ -33,6 +34,7 @@ public class RestauranteUsuarioResponsavelController implements RestauranteUsuar
 	@Autowired
 	private AlgaLinks algaLinks;
 
+	@CheckSecurity.Restaurantes.PodeConsultar
 	@Override
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public CollectionModel<UsuarioDTO> listar(@PathVariable Long restauranteId) {
@@ -52,6 +54,7 @@ public class RestauranteUsuarioResponsavelController implements RestauranteUsuar
 	    return usuariosModel;
 	}
 
+	@CheckSecurity.Restaurantes.PodeGerenciarCadastro
 	@Override
 	@DeleteMapping(path = "/{usuarioId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
@@ -60,6 +63,7 @@ public class RestauranteUsuarioResponsavelController implements RestauranteUsuar
 		return ResponseEntity.noContent().build();
 	}
 
+	@CheckSecurity.Restaurantes.PodeGerenciarCadastro
 	@Override
 	@PutMapping(path = "/{usuarioId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
