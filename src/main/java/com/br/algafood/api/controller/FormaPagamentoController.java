@@ -28,6 +28,7 @@ import com.br.algafood.api.assembler.FormaPagamentoInputDTODisassembler;
 import com.br.algafood.api.model.FormaPagamentoDTO;
 import com.br.algafood.api.model.input.FormaPagamentoInputDTO;
 import com.br.algafood.api.openapi.controller.FormaPagamentoControllerOpenApi;
+import com.br.algafood.core.security.CheckSecurity;
 import com.br.algafood.domain.model.FormaPagamento;
 import com.br.algafood.domain.repository.FormaPagamentoRepository;
 import com.br.algafood.domain.service.CadastroFormaPagamentoService;
@@ -48,6 +49,7 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
 	@Autowired
 	private FormaPagamentoInputDTODisassembler disassembler;
 
+	@CheckSecurity.FormasPagamento.PodeConsultar
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<CollectionModel<FormaPagamentoDTO>> listar(ServletWebRequest request) {
 		
@@ -70,7 +72,7 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
 	}
 	
 	
-
+	@CheckSecurity.FormasPagamento.PodeConsultar
 	@GetMapping(path = "/{formaPagamentoId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<FormaPagamentoDTO> buscar(@PathVariable Long formaPagamentoId, ServletWebRequest request) {
 		
@@ -98,6 +100,7 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
 				.body(formaPagamentoModel);
 	}
 
+	@CheckSecurity.FormasPagamento.PodeEditar
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
 	public FormaPagamentoDTO adicionar(@RequestBody @Valid FormaPagamentoInputDTO formaPagamentoInput) {
@@ -106,6 +109,7 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
 		return assembler.toModel(formaPagamento);
 	}
 
+	@CheckSecurity.FormasPagamento.PodeEditar
 	@PutMapping(path = "/{formaPagamentoId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public FormaPagamentoDTO atualizar(@PathVariable Long formaPagamentoId,
 			@RequestBody @Valid FormaPagamentoInputDTO formaPagamentoInput) {
@@ -118,6 +122,7 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
 		return assembler.toModel(formaPagamentoAtual);
 	}
 
+	@CheckSecurity.FormasPagamento.PodeEditar
 	@DeleteMapping("/{formaPagamentoId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long formaPagamentoId) {
