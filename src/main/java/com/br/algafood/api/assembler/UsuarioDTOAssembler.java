@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import com.br.algafood.api.AlgaLinks;
 import com.br.algafood.api.controller.UsuarioController;
 import com.br.algafood.api.model.UsuarioDTO;
+import com.br.algafood.core.security.AlgaSecurity;
 import com.br.algafood.domain.model.Usuario;
 
 @Component
@@ -16,9 +17,12 @@ public class UsuarioDTOAssembler extends RepresentationModelAssemblerSupport<Usu
 
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
 	@Autowired
 	private AlgaLinks algaLinks;
+
+	@Autowired
+	private AlgaSecurity algaSecurity;
 
 	public UsuarioDTOAssembler() {
 		super(UsuarioController.class, UsuarioDTO.class);
@@ -30,17 +34,18 @@ public class UsuarioDTOAssembler extends RepresentationModelAssemblerSupport<Usu
 		UsuarioDTO usuarioDTO = createModelWithId(usuario.getId(), usuario);
 		modelMapper.map(usuario, usuarioDTO);
 
-		usuarioDTO.add(algaLinks.linkToUsuarios("usuarios"));
-		usuarioDTO.add(algaLinks.linkToGruposUsuario(usuario.getId(), "grupos-usuario"));
+		if (algaSecurity.podeConsultarUsuariosGruposPermissoes()) {
+			usuarioDTO.add(algaLinks.linkToUsuarios("usuarios"));
+			usuarioDTO.add(algaLinks.linkToGruposUsuario(usuario.getId(), "grupos-usuario"));
+		}
 
 		return usuarioDTO;
 	}
-	
+
 	@Override
-    public CollectionModel<UsuarioDTO> toCollectionModel(Iterable<? extends Usuario> entities) {
-        return super.toCollectionModel(entities)
-            .add(algaLinks.linkToUsuarios());
-    }   
+	public CollectionModel<UsuarioDTO> toCollectionModel(Iterable<? extends Usuario> entities) {
+		return super.toCollectionModel(entities).add(algaLinks.linkToUsuarios());
+	}
 
 //	public List<UsuarioDTO> toCollectionModel(Collection<Usuario> usuarios) {
 //		return usuarios.stream().map(usuario -> toModel(usuario)).collect(Collectors.toList());
