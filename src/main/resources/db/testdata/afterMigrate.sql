@@ -186,7 +186,7 @@ insert into oauth_client_details (
 )
 values (
   'algafood-web', null, '$2y$12$w3igMjsfS5XoAYuowoH3C.54vRFWlcXSHLjX7MwF990Kc2KKKh72e',
-  'READ,WRITE', 'password', null, null,
+  'READ,WRITE', 'password,refresh_token', null, null,
   60 * 60 * 6, 60 * 24 * 60 * 60, null
 );
 
