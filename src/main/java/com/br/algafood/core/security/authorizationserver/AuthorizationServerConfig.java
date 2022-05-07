@@ -1,5 +1,7 @@
 package com.br.algafood.core.security.authorizationserver;
 
+import java.security.KeyPair;
+import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
 
 import javax.sql.DataSource;
@@ -20,82 +22,89 @@ import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.KeyUse;
+import com.nimbusds.jose.jwk.RSAKey;
+
 @Configuration
 @EnableAuthorizationServer
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
-	
 	@Autowired
 	private AuthenticationManager authenticationManager;
-	
+
 	@Autowired
 	private UserDetailsService userDetailsService;
-	
+
 	@Autowired
-	private JwtKeyStoreProperties jwtKeyStoreProperties; 
-	
+	private JwtKeyStoreProperties jwtKeyStoreProperties;
+
 	@Autowired
 	private DataSource dataSource;
-	
+
 //	@Autowired
 //	private RedisConnectionFactory redisConnectionFactory;
-	
+
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 		clients.jdbc(dataSource);
 	}
-	
+
 	@Override
 	public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
-		security
-			.checkTokenAccess("isAuthenticated()")
-			.tokenKeyAccess("permitAll()");
+		security.checkTokenAccess("isAuthenticated()").tokenKeyAccess("permitAll()");
 	}
-	
+
+	@Bean
+	public JWKSet jwkSet() {
+		RSAKey.Builder builder = new RSAKey.Builder((RSAPublicKey) keyPair().getPublic()).keyUse(KeyUse.SIGNATURE)
+				.algorithm(JWSAlgorithm.RS256).keyID("algafood-key-id");
+		return new JWKSet(builder.build());
+	}
+
 	@Bean
 	public JwtAccessTokenConverter jwtAccessTokenConverter() {
 		var jwtAccessTokenConverter = new JwtAccessTokenConverter();
-		//jwtAccessTokenConverter.setSigningKey("jaiUJIDSHQ8HEDJasdbjakdbjklahndfjkHSOHKklçjOLDJaopdJDOJAnklahnfdkah");
-		
-		var keyStorePassword = jwtKeyStoreProperties.getPassword();
-		var keyPairAlias = jwtKeyStoreProperties.getKeypairAlias();
-		
-		var keyStoreKeyFactory = new KeyStoreKeyFactory(jwtKeyStoreProperties.getJksLocation(), keyStorePassword.toCharArray());
-		var keyPair = keyStoreKeyFactory.getKeyPair(keyPairAlias);
-		
-		jwtAccessTokenConverter.setKeyPair(keyPair);
-		
+		// jwtAccessTokenConverter.setSigningKey("jaiUJIDSHQ8HEDJasdbjakdbjklahndfjkHSOHKklçjOLDJaopdJDOJAnklahnfdkah");
+		jwtAccessTokenConverter.setKeyPair(keyPair());
+
 		return jwtAccessTokenConverter;
 	}
-	
+
+	private KeyPair keyPair() {
+		var keyStorePassword = jwtKeyStoreProperties.getPassword();
+		var keyPairAlias = jwtKeyStoreProperties.getKeypairAlias();
+
+		var keyStoreKeyFactory = new KeyStoreKeyFactory(jwtKeyStoreProperties.getJksLocation(),
+				keyStorePassword.toCharArray());
+		return keyStoreKeyFactory.getKeyPair(keyPairAlias);
+	}
+
 	@Override
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-		
+
 		var enhancerChain = new TokenEnhancerChain();
 		enhancerChain.setTokenEnhancers(Arrays.asList(new JwtCustomClaimsTokenEnhancer(), jwtAccessTokenConverter()));
-		
-		endpoints
-			.authenticationManager(authenticationManager)
-			.userDetailsService(userDetailsService)
-			.reuseRefreshTokens(false)
-			//.tokenStore(redisTokenStore())
-			.accessTokenConverter(jwtAccessTokenConverter())
-			.tokenEnhancer(enhancerChain)
-			.tokenGranter(tokenGranter(endpoints));
+
+		endpoints.authenticationManager(authenticationManager).userDetailsService(userDetailsService)
+				.reuseRefreshTokens(false)
+				// .tokenStore(redisTokenStore())
+				.accessTokenConverter(jwtAccessTokenConverter()).tokenEnhancer(enhancerChain)
+				.tokenGranter(tokenGranter(endpoints));
 	}
-	
+
 //	private TokenStore redisTokenStore() {
 //		return new RedisTokenStore(redisConnectionFactory);
 //	}
-	
+
 	private TokenGranter tokenGranter(AuthorizationServerEndpointsConfigurer endpoints) {
 		var pkceAuthorizationCodeTokenGranter = new PkceAuthorizationCodeTokenGranter(endpoints.getTokenServices(),
 				endpoints.getAuthorizationCodeServices(), endpoints.getClientDetailsService(),
 				endpoints.getOAuth2RequestFactory());
-		
-		var granters = Arrays.asList(
-				pkceAuthorizationCodeTokenGranter, endpoints.getTokenGranter());
-		
+
+		var granters = Arrays.asList(pkceAuthorizationCodeTokenGranter, endpoints.getTokenGranter());
+
 		return new CompositeTokenGranter(granters);
 	}
 }
