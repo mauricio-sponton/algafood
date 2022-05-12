@@ -18,6 +18,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.CompositeTokenGranter;
 import org.springframework.security.oauth2.provider.TokenGranter;
+import org.springframework.security.oauth2.provider.code.JdbcAuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
@@ -58,8 +59,11 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
 	@Bean
 	public JWKSet jwkSet() {
-		RSAKey.Builder builder = new RSAKey.Builder((RSAPublicKey) keyPair().getPublic()).keyUse(KeyUse.SIGNATURE)
-				.algorithm(JWSAlgorithm.RS256).keyID("algafood-key-id");
+		RSAKey.Builder builder = new RSAKey.Builder((RSAPublicKey) keyPair().getPublic())
+				.keyUse(KeyUse.SIGNATURE)
+				.algorithm(JWSAlgorithm.RS256)
+				.keyID("algafood-key-id");
+		
 		return new JWKSet(builder.build());
 	}
 
@@ -87,11 +91,11 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 		var enhancerChain = new TokenEnhancerChain();
 		enhancerChain.setTokenEnhancers(Arrays.asList(new JwtCustomClaimsTokenEnhancer(), jwtAccessTokenConverter()));
 
-		endpoints.authenticationManager(authenticationManager).userDetailsService(userDetailsService)
-				.reuseRefreshTokens(false)
-				// .tokenStore(redisTokenStore())
-				.accessTokenConverter(jwtAccessTokenConverter()).tokenEnhancer(enhancerChain)
-				.tokenGranter(tokenGranter(endpoints));
+		endpoints.authenticationManager(authenticationManager)
+		.userDetailsService(userDetailsService)
+		.authorizationCodeServices(new JdbcAuthorizationCodeServices(this.dataSource))
+		.accessTokenConverter(jwtAccessTokenConverter()).tokenEnhancer(enhancerChain)
+		.tokenGranter(tokenGranter(endpoints));
 	}
 
 //	private TokenStore redisTokenStore() {
